@@ -23,6 +23,13 @@ describe("policy evaluator", () => {
                 code: "INSUFFICIENT_INVENTORY",
             }),
         );
+        expect(result.checks).toContainEqual(
+            expect.objectContaining({
+                rule: "INVENTORY_IS_SUFFICIENT",
+                passed: false,
+                missedViolation: false,
+            }),
+        );
     });
 
     it("misses an inventory violation when the random value is below its probability", () => {
@@ -41,5 +48,12 @@ describe("policy evaluator", () => {
 
         expect(result.accepted).toBe(true);
         expect(result.violations).toHaveLength(0);
+        expect(result.checks).toContainEqual(
+            expect.objectContaining({
+                rule: "INVENTORY_IS_SUFFICIENT",
+                passed: true,
+                missedViolation: true,
+            }),
+        );
     });
 });

@@ -8,10 +8,13 @@ describe("decision history", () => {
         const simulation = new Simulation(createInitialWorld());
 
         simulation.advanceTick({
-            type: "SELL_FOOD",
-            agentId: "agent-mira",
-            quantity: 2,
-            pricePerUnit: 2,
+            action: {
+                type: "SELL_FOOD",
+                agentId: "agent-mira",
+                quantity: 2,
+                pricePerUnit: 2,
+            },
+            rationale: "Mira sells food to earn cash.",
         });
 
         expect(simulation.getHistory()).toHaveLength(1);

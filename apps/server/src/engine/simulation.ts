@@ -1,4 +1,4 @@
-import type { AgentAction } from "../types/action.js";
+import type { AgentAction, ActionProposal } from "../types/action.js";
 import type { DecisionRecord } from "../types/decision.js";
 import type { WorldState } from "../types/world.js";
 import { processAction } from "./actionProcessor.js";
@@ -17,17 +17,22 @@ export class Simulation {
         private readonly random: () => number = Math.random,
     ) {}
 
-    advanceTick(action?: AgentAction): TickResult {
+    advanceTick(proposal?: ActionProposal): TickResult {
         this.world.tick += 1;
 
-        if (!action) {
+        if (!proposal) {
             return {
                 world: this.world,
                 decision: null,
             };
         }
 
-        const outcome = processAction(this.world, action, this.random);
+        const outcome = processAction(
+            this.world,
+            proposal.action,
+            this.random,
+            proposal.rationale,
+        );
         this.history.add(outcome.record);
 
         return {

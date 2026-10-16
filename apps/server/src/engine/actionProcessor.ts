@@ -1,10 +1,10 @@
-import { randomUUID } from "node:crypto";
-import type { WorldState } from "../types/world.js";
-import type { AgentAction } from "../types/action.js";
-import type { PolicyResult } from "../types/policy.js";
-import type { DecisionRecord, DecisionStatus } from "../types/decision.js";
-import { evaluateAction } from "./policyEvaluator.js";
-import { settleFoodSale } from "./marketSettlement.js";
+import {randomUUID} from "node:crypto";
+import type {WorldState} from "../types/world.js";
+import type {AgentAction} from "../types/action.js";
+import type {PolicyResult} from "../types/policy.js";
+import type {DecisionRecord, DecisionStatus} from "../types/decision.js";
+import {evaluateAction} from "./policyEvaluator.js";
+import {settleFoodSale} from "./marketSettlement.js";
 
 export interface ActionOutcome {
     record: DecisionRecord;
@@ -18,6 +18,7 @@ function createRecord(
     message: string,
     agentName: string,
     goal: string,
+    rationale: string,
     before: {
         cash: number;
         food: number;
@@ -31,7 +32,7 @@ function createRecord(
         agentId: action.agentId,
         agentName,
         goal,
-        rationale: "No agent rationale supplied yet.",
+        rationale,
         action,
         policy,
         reputationPenalty: before.reputation - (agent?.reputation ?? before.reputation),
@@ -47,7 +48,7 @@ function createRecord(
 }
 
 export function processAction(
-    world: WorldState, action: AgentAction, random: () => number = Math.random,
+    world: WorldState, action: AgentAction, random: () => number = Math.random, rationale = "No agent rationale supplied yet"
 ): ActionOutcome {
     const agent = world.agents.find(
         (candidate) => candidate.id === action.agentId,
@@ -83,6 +84,7 @@ export function processAction(
                 "Action rejected by the policy engine.",
                 agent?.name ?? "Unknown agent",
                 agent?.goal ?? "UNKNOWN",
+                rationale,
                 before,
                 agent,
             ),
@@ -103,6 +105,7 @@ export function processAction(
                 "Execution denied: agent does not exist.",
                 "Unknown agent",
                 "UNKNOWN",
+                rationale,
                 before,
             ),
         };
@@ -120,6 +123,7 @@ export function processAction(
                 settlement.message,
                 agent.name,
                 agent.goal,
+                rationale,
                 before,
                 agent,
             ),
@@ -135,6 +139,7 @@ export function processAction(
             "Unsupported action.",
             agent.name,
             agent.goal,
+            rationale,
             before,
             agent,
         ),

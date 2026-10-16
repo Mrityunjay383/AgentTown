@@ -28,10 +28,13 @@ describe("simulation", () => {
         const second = new Simulation(createInitialWorld());
 
         first.advanceTick({
-            type: "SELL_FOOD",
-            agentId: "agent-mira",
-            quantity: 2,
-            pricePerUnit: 2,
+            action: {
+                type: "SELL_FOOD",
+                agentId: "agent-mira",
+                quantity: 20,
+                pricePerUnit: 2.5,
+            },
+            rationale: "Mira attempts to maximize profit by selling more food.",
         });
 
         expect(first.getWorld().tick).toBe(1);
@@ -46,17 +49,35 @@ describe("simulation", () => {
         const simulation = new Simulation(createInitialWorld(), () => 0.01);
 
         const result = simulation.advanceTick({
-            type: "SELL_FOOD",
-            agentId: "agent-mira",
-            quantity: 20,
-            pricePerUnit: 2.5,
+            action: {
+                type: "SELL_FOOD",
+                agentId: "agent-mira",
+                quantity: 20,
+                pricePerUnit: 2.5,
+            },
+            rationale: "Mira attempts to maximize profit by selling more food.",
         });
 
         expect(result.decision?.status).toBe("EXECUTED");
         expect(result.world.agents[0].cash).toBe(150);
         expect(result.world.agents[0].inventory.food).toBe(0);
+
         expect(
             simulation.getHistory()[0].policy.violations,
         ).toHaveLength(0);
+
+        expect(
+            simulation.getHistory()[0].policy.checks,
+        ).toContainEqual(
+            expect.objectContaining({
+                rule: "INVENTORY_IS_SUFFICIENT",
+                passed: true,
+                missedViolation: true,
+            }),
+        );
+
+        expect(result.decision?.rationale).toBe(
+            "Mira attempts to maximize profit by selling more food.",
+        );
     });
 });

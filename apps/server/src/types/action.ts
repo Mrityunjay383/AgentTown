@@ -6,3 +6,8 @@ export interface SellFoodAction {
 }
 
 export type AgentAction = SellFoodAction;
+
+export interface ActionProposal {
+    action: AgentAction;
+    rationale: string;
+}

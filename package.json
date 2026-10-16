@@ -1,0 +1,10 @@
+{
+  "name": "agenttown",
+  "private": true,
+  "scripts": {
+    "dev:client": "pnpm --dir apps/client dev",
+    "dev:server": "pnpm --dir apps/server dev",
+    "build:client": "pnpm --dir apps/client build",
+    "build:server": "pnpm --dir apps/server build"
+  }
+}

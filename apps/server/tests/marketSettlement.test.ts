@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { settleFoodSale } from "./marketSettlement.js";
-import type { Agent } from "../types/world.js";
+import { settleFoodSale } from "../src/engine/marketSettlement.js";
+import type { Agent } from "../src/types/world.js";
 
 describe("market settlement", () => {
     it("pays for the claimed quantity but deducts only available food", () => {

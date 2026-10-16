@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { createInitialWorld } from "./initialWorld.js";
-import { createWorldSnapshot } from "./worldSnapshot.js";
+import { createInitialWorld } from "../src/engine/initialWorld.js";
+import { createWorldSnapshot } from "../src/engine/worldSnapshot.js";
 
 describe("world snapshot", () => {
     it("remains unchanged when the live world is modified", () => {

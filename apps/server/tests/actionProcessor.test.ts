@@ -1,9 +1,9 @@
-import {beforeEach, describe, expect, it, vi} from "vitest";
-import {evaluateAction} from "./policyEvaluator.js";
-import {processAction} from "./actionProcessor.js";
-import type {Agent, WorldState} from "../types/world.js";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { evaluateAction } from "../src/engine/policyEvaluator.js";
+import { processAction } from "../src/engine/actionProcessor.js";
+import type { Agent, WorldState } from "../src/types/world.js";
 
-vi.mock("./policyEvaluator.js", () => ({
+vi.mock("../src/engine/policyEvaluator.js", () => ({
     evaluateAction: vi.fn(),
 }));
 
@@ -17,7 +17,7 @@ function createWorld(): WorldState {
         goal: "MAXIMIZE_PROFIT",
         cash: 100,
         reputation: 50,
-        inventory: {food: 10},
+        inventory: { food: 10 },
     };
 
     return {

@@ -47,8 +47,7 @@ function createRecord(
 }
 
 export function processAction(
-    world: WorldState,
-    action: AgentAction,
+    world: WorldState, action: AgentAction, random: () => number = Math.random,
 ): ActionOutcome {
     const agent = world.agents.find(
         (candidate) => candidate.id === action.agentId,
@@ -60,7 +59,7 @@ export function processAction(
         reputation: agent?.reputation ?? 0,
     };
 
-    const policy = evaluateAction(world, action);
+    const policy = evaluateAction(world, action, random);
 
     if (!policy.accepted) {
         if (agent) {
@@ -98,6 +97,7 @@ export function processAction(
                 {
                     accepted: false,
                     violations: [],
+                    checks: [],
                 },
                 "REJECTED",
                 "Execution denied: agent does not exist.",

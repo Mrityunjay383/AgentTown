@@ -19,4 +19,11 @@ export interface PolicyViolation {
 export interface PolicyResult {
     accepted: boolean;
     violations: PolicyViolation[];
+    checks: PolicyCheck[];
+}
+
+export interface PolicyCheck {
+    rule: PolicyRule;
+    passed: boolean;
+    missedViolation: boolean;
 }

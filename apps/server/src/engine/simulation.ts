@@ -1,4 +1,5 @@
-import type { AgentAction, ActionProposal } from "../types/action.js";
+import type { ActionProposal } from "../types/action.js";
+import { createWorldSnapshot } from "./worldSnapshot.js";
 import type { DecisionRecord } from "../types/decision.js";
 import type { WorldState } from "../types/world.js";
 import { processAction } from "./actionProcessor.js";
@@ -50,6 +51,6 @@ export class Simulation {
     }
 
     getWorld(): WorldState {
-        return this.world;
+        return createWorldSnapshot(this.world);
     }
 }

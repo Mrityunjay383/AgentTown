@@ -4,16 +4,16 @@ export class DecisionHistory {
     private records: DecisionRecord[] = [];
 
     add(record: DecisionRecord): void {
-        this.records.push(record);
+        this.records.push(structuredClone(record));
     }
 
     getAll(): DecisionRecord[] {
-        return [...this.records];
+        return structuredClone(this.records);
     }
 
     getByAgent(agentId: string): DecisionRecord[] {
-        return this.records.filter(
-            (record) => record.agentId === agentId,
+        return structuredClone(
+            this.records.filter((record) => record.agentId === agentId),
         );
     }
 

@@ -1,26 +1,65 @@
-
 import type { WorldState } from "../types/world.js";
 import type { AgentAction } from "../types/action.js";
 import type { PolicyResult } from "../types/policy.js";
+import type { DecisionRecord, DecisionStatus } from "../types/decision.js";
 import { evaluateAction } from "./policyEvaluator.js";
 import { settleFoodSale } from "./marketSettlement.js";
 
 export interface ActionOutcome {
-    action: AgentAction;
-    policy: PolicyResult;
-    executed: boolean;
-    message: string;
+    record: DecisionRecord;
+}
+
+function createRecord(
+    world: WorldState,
+    action: AgentAction,
+    policy: PolicyResult,
+    status: DecisionStatus,
+    message: string,
+    agentName: string,
+    goal: string,
+    before: {
+        cash: number;
+        food: number;
+        reputation: number;
+    },
+    agent?: WorldState["agents"][number],
+): DecisionRecord {
+    return {
+        id: `${world.tick}-${action.agentId}-${Date.now()}`,
+        tick: world.tick,
+        agentId: action.agentId,
+        agentName,
+        goal,
+        rationale: "No agent rationale supplied yet.",
+        action,
+        policy,
+        reputationPenalty: before.reputation - (agent?.reputation ?? before.reputation),
+        status,
+        outcomeMessage: message,
+        cashBefore: before.cash,
+        cashAfter: agent?.cash ?? before.cash,
+        foodBefore: before.food,
+        foodAfter: agent?.inventory.food ?? before.food,
+        reputationBefore: before.reputation,
+        reputationAfter: agent?.reputation ?? before.reputation,
+    };
 }
 
 export function processAction(
     world: WorldState,
     action: AgentAction,
 ): ActionOutcome {
-    const policy = evaluateAction(world, action);
-
     const agent = world.agents.find(
         (candidate) => candidate.id === action.agentId,
     );
+
+    const before = {
+        cash: agent?.cash ?? 0,
+        food: agent?.inventory.food ?? 0,
+        reputation: agent?.reputation ?? 0,
+    };
+
+    const policy = evaluateAction(world, action);
 
     if (!policy.accepted) {
         if (agent) {
@@ -36,22 +75,35 @@ export function processAction(
         }
 
         return {
-            action,
-            policy,
-            executed: false,
-            message: "Action rejected by the policy engine.",
+            record: createRecord(
+                world,
+                action,
+                policy,
+                "REJECTED",
+                "Action rejected by the policy engine.",
+                agent?.name ?? "Unknown agent",
+                agent?.goal ?? "UNKNOWN",
+                before,
+                agent,
+            ),
         };
     }
 
     if (!agent) {
         return {
-            action,
-            policy: {
-                accepted: false,
-                violations: [],
-            },
-            executed: false,
-            message: "Execution denied: agent does not exist.",
+            record: createRecord(
+                world,
+                action,
+                {
+                    accepted: false,
+                    violations: [],
+                },
+                "REJECTED",
+                "Execution denied: agent does not exist.",
+                "Unknown agent",
+                "UNKNOWN",
+                before,
+            ),
         };
     }
 
@@ -59,17 +111,31 @@ export function processAction(
         const settlement = settleFoodSale(agent, action);
 
         return {
-            action,
-            policy,
-            executed: settlement.executed,
-            message: settlement.message,
+            record: createRecord(
+                world,
+                action,
+                policy,
+                settlement.executed ? "EXECUTED" : "SETTLEMENT_FAILED",
+                settlement.message,
+                agent.name,
+                agent.goal,
+                before,
+                agent,
+            ),
         };
     }
 
     return {
-        action,
-        policy,
-        executed: false,
-        message: "Unsupported action.",
+        record: createRecord(
+            world,
+            action,
+            policy,
+            "SETTLEMENT_FAILED",
+            "Unsupported action.",
+            agent.name,
+            agent.goal,
+            before,
+            agent,
+        ),
     };
 }

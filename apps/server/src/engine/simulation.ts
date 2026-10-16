@@ -53,4 +53,8 @@ export class Simulation {
     getWorld(): WorldState {
         return createWorldSnapshot(this.world);
     }
+
+    getCurrentTick(): number {
+        return this.world.tick;
+    }
 }

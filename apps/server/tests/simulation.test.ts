@@ -8,6 +8,8 @@ describe("simulation", () => {
 
         const result = simulation.advanceTick();
 
+        expect(simulation.getCurrentTick()).toBe(1);
+
         expect(result.world.tick).toBe(1);
         expect(result.world.agents[0].cash).toBe(100);
         expect(result.world.agents[0].inventory.food).toBe(10);
@@ -21,6 +23,7 @@ describe("simulation", () => {
         simulation.advanceTick();
 
         expect(simulation.getWorld().tick).toBe(2);
+        expect(simulation.getCurrentTick()).toBe(2);
     });
 
     it("keeps separate simulation instances isolated", () => {
@@ -79,5 +82,18 @@ describe("simulation", () => {
         expect(result.decision?.rationale).toBe(
             "Mira attempts to maximize profit by selling more food.",
         );
+    });
+
+    it("prevents callers from mutating the internal world through getWorld", () => {
+        const simulation = new Simulation(createInitialWorld());
+
+        const world = simulation.getWorld();
+        world.agents[0].cash = 999;
+        world.agents[0].inventory.food = 999;
+
+        const actualWorld = simulation.getWorld();
+
+        expect(actualWorld.agents[0].cash).toBe(100);
+        expect(actualWorld.agents[0].inventory.food).toBe(10);
     });
 });

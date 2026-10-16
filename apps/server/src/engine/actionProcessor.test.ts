@@ -1,9 +1,7 @@
-
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { evaluateAction } from "./policyEvaluator.js";
-import { processAction } from "./actionProcessor.js";
-import type { Agent } from "../types/world.js";
-import type { WorldState } from "../types/world.js";
+import {beforeEach, describe, expect, it, vi} from "vitest";
+import {evaluateAction} from "./policyEvaluator.js";
+import {processAction} from "./actionProcessor.js";
+import type {Agent, WorldState} from "../types/world.js";
 
 vi.mock("./policyEvaluator.js", () => ({
     evaluateAction: vi.fn(),
@@ -19,7 +17,7 @@ function createWorld(): WorldState {
         goal: "MAXIMIZE_PROFIT",
         cash: 100,
         reputation: 50,
-        inventory: { food: 10 },
+        inventory: {food: 10},
     };
 
     return {
@@ -56,7 +54,7 @@ describe("action processor", () => {
 
         const mira = world.agents[0];
 
-        expect(result.executed).toBe(false);
+        expect(result.record.status).toBe("REJECTED");
         expect(mira.reputation).toBe(40);
         expect(mira.inventory.food).toBe(10);
         expect(mira.cash).toBe(100);

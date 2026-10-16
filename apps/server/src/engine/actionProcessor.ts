@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import type { WorldState } from "../types/world.js";
 import type { AgentAction } from "../types/action.js";
 import type { PolicyResult } from "../types/policy.js";
@@ -25,7 +26,7 @@ function createRecord(
     agent?: WorldState["agents"][number],
 ): DecisionRecord {
     return {
-        id: `${world.tick}-${action.agentId}-${Date.now()}`,
+        id: randomUUID(),
         tick: world.tick,
         agentId: action.agentId,
         agentName,

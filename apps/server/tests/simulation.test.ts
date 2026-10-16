@@ -96,4 +96,22 @@ describe("simulation", () => {
         expect(actualWorld.agents[0].cash).toBe(100);
         expect(actualWorld.agents[0].inventory.food).toBe(10);
     });
+
+
+    it("runs Mira's proposal through the simulation pipeline", () => {
+        const simulation = new Simulation(createInitialWorld(), () => 0.01);
+
+        const result = simulation.advanceMiraTick();
+
+        expect(result.world.tick).toBe(1);
+        expect(result.decision?.status).toBe("EXECUTED");
+        expect(result.decision?.rationale).toBe(
+            "Mira attempts to maximize profit by selling twice her available food.",
+        );
+
+        expect(result.world.agents[0].cash).toBe(150);
+        expect(result.world.agents[0].inventory.food).toBe(0);
+        expect(simulation.getHistory()).toHaveLength(1);
+    });
+
 });

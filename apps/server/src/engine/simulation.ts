@@ -4,6 +4,7 @@ import type { DecisionRecord } from "../types/decision.js";
 import type { WorldState } from "../types/world.js";
 import { processAction } from "./actionProcessor.js";
 import { DecisionHistory } from "./decisionHistory.js";
+import { createMiraProposal } from "../agents/mira.js";
 
 export interface TickResult {
     world: WorldState;
@@ -56,5 +57,17 @@ export class Simulation {
 
     getCurrentTick(): number {
         return this.world.tick;
+    }
+
+    advanceMiraTick(): TickResult {
+        const mira = this.world.agents.find(
+            (agent) => agent.id === "agent-mira",
+        );
+
+        if (!mira) {
+            return this.advanceTick();
+        }
+
+        return this.advanceTick(createMiraProposal(mira));
     }
 }

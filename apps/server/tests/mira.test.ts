@@ -80,18 +80,15 @@ describe("Mira agent", () => {
         const proposal = createMiraProposal(mira);
 
         expect(proposal.action).toEqual({
-            type: "SELL_FOOD",
+            type: "WAIT",
             agentId: "agent-mira",
-            quantity: 0,
-            pricePerUnit: 2.5,
-        });
+        })
 
         expect(proposal.rationale).toBe(
-            "Mira has no food available to sell.",
+            "Mira has no food available to sell, so she waits.",
         );
 
         expect(mira.cash).toBe(100);
         expect(mira.inventory.food).toBe(0);
     });
-
 });

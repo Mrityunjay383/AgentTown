@@ -130,6 +130,23 @@ export function processAction(
         };
     }
 
+    if (action.type === "WAIT") {
+        return {
+            record: createRecord(
+                world,
+                action,
+                policy,
+                "EXECUTED",
+                `${agent.name} waits. No resources were changed.`,
+                agent.name,
+                agent.goal,
+                rationale,
+                before,
+                agent,
+            ),
+        };
+    }
+
     return {
         record: createRecord(
             world,

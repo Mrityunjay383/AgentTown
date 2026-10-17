@@ -5,12 +5,10 @@ export function createMiraProposal(agent: Agent): ActionProposal {
     if (agent.inventory.food <= 0) {
         return {
             action: {
-                type: "SELL_FOOD",
+                type: "WAIT",
                 agentId: agent.id,
-                quantity: 0,
-                pricePerUnit: 2.5,
             },
-            rationale: "Mira has no food available to sell.",
+            rationale: "Mira has no food available to sell, so she waits.",
         };
     }
 

@@ -56,4 +56,27 @@ describe("policy evaluator", () => {
             }),
         );
     });
+
+    it("accepts a WAIT action for an existing agent", () => {
+        const world = createInitialWorld();
+
+        const result = evaluateAction(
+            world,
+            {
+                type: "WAIT",
+                agentId: "agent-mira",
+            },
+            () => 0.99,
+        );
+
+        expect(result.accepted).toBe(true);
+        expect(result.violations).toHaveLength(0);
+        expect(result.checks).toEqual([
+            {
+                rule: "AGENT_EXISTS",
+                passed: true,
+                missedViolation: false,
+            },
+        ]);
+    });
 });

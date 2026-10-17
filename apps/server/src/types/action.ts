@@ -5,9 +5,15 @@ export interface SellFoodAction {
     pricePerUnit: number;
 }
 
-export type AgentAction = SellFoodAction;
+export interface WaitAction {
+    type: "WAIT";
+    agentId: string;
+}
+
+export type AgentAction = SellFoodAction | WaitAction;
 
 export interface ActionProposal {
     action: AgentAction;
     rationale: string;
 }
+

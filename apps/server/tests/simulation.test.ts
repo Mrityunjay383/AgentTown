@@ -97,7 +97,6 @@ describe("simulation", () => {
         expect(actualWorld.agents[0].inventory.food).toBe(10);
     });
 
-
     it("runs Mira's proposal through the simulation pipeline", () => {
         const simulation = new Simulation(createInitialWorld(), () => 0.01);
 
@@ -114,4 +113,23 @@ describe("simulation", () => {
         expect(simulation.getHistory()).toHaveLength(1);
     });
 
+    it("records a WAIT decision when Mira has no food", () => {
+        const world = createInitialWorld();
+        world.agents[0].inventory.food = 0;
+
+        const simulation = new Simulation(world);
+        const result = simulation.advanceMiraTick();
+
+        expect(result.world.tick).toBe(1);
+        expect(result.decision?.status).toBe("EXECUTED");
+        expect(result.decision?.action.type).toBe("WAIT");
+        expect(result.decision?.rationale).toBe(
+            "Mira has no food available to sell, so she waits.",
+        );
+
+        expect(result.world.agents[0].cash).toBe(100);
+        expect(result.world.agents[0].inventory.food).toBe(0);
+        expect(result.world.agents[0].reputation).toBe(50);
+        expect(simulation.getHistory()).toHaveLength(1);
+    });
 });

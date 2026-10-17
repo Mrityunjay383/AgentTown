@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { evaluateAction } from "../src/engine/policyEvaluator.js";
 import { processAction } from "../src/engine/actionProcessor.js";
 import type { Agent, WorldState } from "../src/types/world.js";
+import {createInitialWorld} from "../src/engine/initialWorld";
 
 vi.mock("../src/engine/policyEvaluator.js", () => ({
     evaluateAction: vi.fn(),
@@ -43,6 +44,18 @@ describe("action processor", () => {
                     reputationPenalty: 10,
                 },
             ],
+            checks: [
+                {
+                    rule: "AGENT_EXISTS",
+                    passed: true,
+                    missedViolation: false,
+                },
+                {
+                    rule: "INVENTORY_IS_SUFFICIENT",
+                    passed: false,
+                    missedViolation: false,
+                },
+            ],
         });
 
         const result = processAction(world, {
@@ -59,4 +72,43 @@ describe("action processor", () => {
         expect(mira.inventory.food).toBe(10);
         expect(mira.cash).toBe(100);
     });
+
+
+    it("executes WAIT without changing agent state", () => {
+        const world = createInitialWorld();
+
+        mockedEvaluateAction.mockReturnValue({
+            accepted: true,
+            violations: [],
+            checks: [
+                {
+                    rule: "AGENT_EXISTS",
+                    passed: true,
+                    missedViolation: false,
+                },
+            ],
+        });
+
+        const outcome = processAction(
+            world,
+            {
+                type: "WAIT",
+                agentId: "agent-mira",
+            },
+            () => 0.99,
+            "Mira waits because she has no food.",
+        );
+
+        expect(outcome.record.status).toBe("EXECUTED");
+        expect(outcome.record.rationale).toBe(
+            "Mira waits because she has no food.",
+        );
+        expect(outcome.record.cashBefore).toBe(100);
+        expect(outcome.record.cashAfter).toBe(100);
+        expect(outcome.record.foodBefore).toBe(10);
+        expect(outcome.record.foodAfter).toBe(10);
+        expect(outcome.record.reputationBefore).toBe(50);
+        expect(outcome.record.reputationAfter).toBe(50);
+    });
+
 });

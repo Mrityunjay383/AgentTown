@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { createInitialWorld } from "./engine/initialWorld.js";
+import worldRoutes from "./routes/world.routes.js";
 
 dotenv.config();
 
@@ -17,8 +17,7 @@ app.get("/health", (_req, res) => {
     });
 });
 
-app.get("/world", (_req, res) => {
-    res.json(createInitialWorld());
-});
+app.use("/world", worldRoutes);
+
 
 export default app;

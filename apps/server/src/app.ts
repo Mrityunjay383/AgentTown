@@ -19,5 +19,4 @@ app.get("/health", (_req, res) => {
 
 app.use("/world", worldRoutes);
 
-
 export default app;

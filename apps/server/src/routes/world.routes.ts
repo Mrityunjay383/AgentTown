@@ -14,4 +14,10 @@ router.get("/history", (_req, res) => {
     res.json(simulation.getHistory());
 });
 
+router.post("/tick", (_req, res) => {
+    const result = simulation.advanceMiraTick();
+
+    res.json(result);
+});
+
 export default router;

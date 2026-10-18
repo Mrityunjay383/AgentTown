@@ -1,1 +1,35 @@
+
 @import "tailwindcss";
+
+/* AgentTown custom scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #334155 transparent;
+}
+
+/* Chromium browsers: Chrome, Edge, etc. */
+::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+    transition: background-color 200ms ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #06b6d4;
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent;
+}

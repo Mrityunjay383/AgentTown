@@ -174,20 +174,26 @@ export function DecisionDetailsModal({
                                             </p>
 
                                             {check.missedViolation && (
-                                                <p className="mt-1 text-xs text-amber-400">
-                                                    The policy system missed this violation.
+                                                <p className="mt-1 text-xs leading-5 text-amber-400">
+                                                    A violation occurred, but the policy system failed to catch it.
                                                 </p>
                                             )}
                                         </div>
 
                                         <span
-                                            className={`shrink-0 text-xs font-semibold ${
-                                                check.passed
-                                                    ? "text-emerald-400"
-                                                    : "text-red-400"
+                                            className={`shrink-0 rounded-md border px-2 py-1 text-[10px] font-semibold tracking-wide ${
+                                                check.missedViolation
+                                                    ? "border-amber-800 bg-amber-950/50 text-amber-400"
+                                                    : check.passed
+                                                        ? "border-emerald-800 bg-emerald-950/40 text-emerald-400"
+                                                        : "border-red-800 bg-red-950/40 text-red-400"
                                             }`}
                                         >
-                                            {check.passed ? "PASSED" : "FAILED"}
+                                            {check.missedViolation
+                                                ? "VIOLATION MISSED"
+                                                : check.passed
+                                                    ? "PASSED"
+                                                    : "VIOLATION DETECTED"}
                                         </span>
                                     </div>
                                 ))}

@@ -16,7 +16,8 @@ function App() {
         history,
         error: historyError,
         isLoading: isHistoryLoading,
-        refreshHistory,
+        // refreshHistory,
+        appendDecision
     } = useWorldHistory();
 
     const mira = world?.agents.find(
@@ -24,8 +25,11 @@ function App() {
     );
 
     async function handleAdvanceTick() {
-        await advanceTick();
-        await refreshHistory();
+        const decision = await advanceTick();
+
+        if (decision) {
+            appendDecision(decision);
+        }
     }
 
     return (
@@ -47,7 +51,7 @@ function App() {
                 </header>
 
                 {/* Main dashboard layout */}
-                <div className=" grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(340px,2fr)]">
+                <div className=" grid grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,4fr)_minmax(340px,2fr)]">
                     {/* Left: World Overview */}
                     <section className="min-w-0 space-y-6">
                         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -112,8 +116,10 @@ function App() {
                             </p>
                         )}
 
-                        <div className="h-[70vh] overflow-y-auto flex flex-col gap-4">
-                            {mira && <AgentCard agent={mira} />}
+                        <div className="h-[70vh] space-y-4 overflow-y-auto pr-2 [scrollbar-gutter:stable]">
+                            {world?.agents.map((agent) => (
+                                <AgentCard key={agent.id} agent={agent} />
+                            ))}
                         </div>
 
                     </section>

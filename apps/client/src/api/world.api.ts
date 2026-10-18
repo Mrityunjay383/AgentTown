@@ -7,12 +7,15 @@ export async function getWorld(): Promise<WorldState> {
     return response.data;
 }
 
-export async function tickWorld(): Promise<WorldState> {
-    const response = await apiClient.post<{ world: WorldState }>(
-        "/world/tick",
-    );
+export type TickResult = {
+    world: WorldState;
+    decision: DecisionRecord | null;
+};
 
-    return response.data.world;
+export async function tickWorld(): Promise<TickResult> {
+    const response = await apiClient.post<TickResult>("/world/tick");
+
+    return response.data;
 }
 
 export async function getWorldHistory(): Promise<DecisionRecord[]> {

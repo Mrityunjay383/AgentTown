@@ -25,9 +25,22 @@ export function useWorldHistory() {
         }
     }, []);
 
+    const appendDecision = useCallback((decision: DecisionRecord) => {
+        setHistory((currentHistory) => [
+            ...currentHistory,
+            decision,
+        ]);
+    }, []);
+
     useEffect(() => {
         void refreshHistory();
     }, [refreshHistory]);
 
-    return { history, error, isLoading, refreshHistory };
+    return {
+        history,
+        error,
+        isLoading,
+        refreshHistory,
+        appendDecision,
+    };
 }

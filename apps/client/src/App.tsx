@@ -2,7 +2,13 @@ import {AgentCard} from "./features/world/components/AgentCard";
 import {useWorld} from "./features/world/hooks/useWorld";
 
 function App() {
-    const {world, error, isLoading, refreshWorld} = useWorld();
+    const {
+        world,
+        error,
+        isLoading,
+        refreshWorld,
+        advanceTick,
+    } = useWorld();
 
     const mira = world?.agents.find((agent) => agent.id === "agent-mira");
 
@@ -48,6 +54,14 @@ function App() {
                                 className="rounded-xl border border-slate-700 bg-slate-900 px-4 py-2 text-sm font-medium text-slate-200 transition hover:border-cyan-500 hover:text-cyan-400 disabled:cursor-not-allowed disabled:opacity-50"
                             >
                                 {isLoading ? "Refreshing..." : "Refresh"}
+                            </button>
+
+                            <button
+                                onClick={() => void advanceTick()}
+                                disabled={isLoading}
+                                className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+                            >
+                                Advance Tick
                             </button>
                         </div>
 

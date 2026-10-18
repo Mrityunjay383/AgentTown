@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { getWorld } from "../../../api/world.api";
+import {getWorld, tickWorld} from "../../../api/world.api";
 import type { WorldState } from "../../../types/world";
 
 export function useWorld() {
@@ -25,9 +25,27 @@ export function useWorld() {
         }
     }, []);
 
+    const advanceTick = useCallback(async () => {
+        setIsLoading(true);
+        setError(null);
+
+        try {
+            const data = await tickWorld();
+            setWorld(data);
+        } catch (err: unknown) {
+            setError(
+                err instanceof Error
+                    ? err.message
+                    : "Unable to advance simulation",
+            );
+        } finally {
+            setIsLoading(false);
+        }
+    }, []);
+
     useEffect(() => {
         void refreshWorld();
     }, [refreshWorld]);
 
-    return { world, error, isLoading, refreshWorld };
+    return { world, error, isLoading, refreshWorld, advanceTick };
 }
